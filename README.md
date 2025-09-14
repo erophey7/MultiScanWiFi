@@ -47,10 +47,15 @@ sudo python3 multiscanwifi.py -i wlan0,wlan1 -s 5 -w 10 -o ./results/ -d 20
 Example
 
 Scan two interfaces with default settings:
+
 `sudo python3 multiscanwifi.py -i wlan0,wlan1`
+
 Scan a single interface with custom scan and wait times:
+
 `sudo python3 multiscanwifi.py -i wlan0 -s 10 -w 5 -o ./captures/`
+
 Limit deauthentication packets to 5:
+
 `sudo python3 multiscanwifi.py -i wlan0 -d 5`
 
 ## Notes
