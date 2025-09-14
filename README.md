@@ -1,65 +1,59 @@
-<pre>
-|\   ___ \|\   __  \|\  \|\  \    /  /|\  ___ \ |\   ____\|\  \|\  \|\   __  \|\  \|\  \ |\  ___ \     
-\ \  \_|\ \ \  \|\  \ \  \ \  \  /  / | \   __/|\ \  \___|\ \  \\\  \ \  \|\  \ \  \/  /|\ \   __/|    
- \ \  \ \\ \ \   _  _\ \  \ \  \/  / / \ \  \_|/_\ \_____  \ \   __  \ \   __  \ \   ___  \ \  \_|/__  
-  \ \  \_\\ \ \  \\  \\ \  \ \    / /   \ \  \_|\ \|____|\  \ \  \ \  \ \  \ \  \ \  \\ \  \ \  \_|\ \ 
-   \ \_______\ \__\\ _\\ \__\ \__/ /     \ \_______\____\_\  \ \__\ \__\ \__\ \__\ \__\\ \__\ \_______\
-    \|_______|\|__|\|__|\|__|\|__|/       \|_______|\_________\|__|\|__|\|__|\|__|\|__| \|__|\|_______|
-                                                   \|_________|                                        
-</pre>
+# MultiScanWiFi
 
-# DriveShake
+# MultiScanWiFi
 
-Wifi network scanning tool, which can also capture WPA/WPA2 PSK handshakes. The tool automatically finds clients connected to the access point and sends deauthentication packets while sniffing for the handshake.
+MultiScanWiFi is a **multithreaded Wi-Fi scanner** that supports multiple interfaces simultaneously.  
+It automatically scans access points (APs) and clients, captures WPA/WPA2 handshakes, performs deauthentication attacks (deauth), and provides a terminal-based interface with logging.
 
-This tool should only be used on your own network or with the explicit legal consent of the owner of the network. The author of this tool does not condone is not responsible for misuse of this tool.
+> ⚠️ **Warning:** Use this tool only on networks you own or have explicit permission to test. Unauthorized use may violate laws in your country.
 
-In no event shall the creators, owner, or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
+---
 
-## Dependencies
+## Features
 
-  - python 2.x
-  - scapy
-  
+- Scan multiple Wi-Fi interfaces at once
+- Supports only **2.4 GHz Wi-Fi networks**
+- Automatic channel hopping and scanning
+- Capture WPA/WPA2 handshakes
+- Logs results and supports terminal output with curses
+- Configurable scan time, wait time, and deauth count
+- Save captured handshakes in `.cap` files
 
-## Prerequisites
+---
 
-To perform deauthentication attacks you must have a network card capable of injection
+## Requirements
 
-## Usage
+- Python 3.x
+- [Scapy](https://scapy.net/)
+- Wireless network interfaces capable of monitor mode and packet injection
+- `ip` + `iw` **or** `ifconfig` + `iwconfig`
 
-The tool will automatically place the wireless interface in monitor mode. From
-there the tool has 3 modes which can be used for different purposes.
+---
 
-### Scanmode
+Usage
 
-The first mode is scanmode (-S). In this mode is area is simply scanned for available access points and displays various information about each access point.
+Run MultiScanWiFi with one or more interfaces:
 
-### Capturemode
-The second mode is capturemode (-C), in this mode the tool will automatically scan for and deauthenticate clients connected to a specififed client while listening for WPA handshakes. The tool will continue scanning and attempting deauthentication until either a WPA handshake is recieved or the user temrinates the process. User must specify either a BSSID (-b) or SSID (-e) in this mode. It will save the cap file automatically in the current working directory unless otherwise specified by -o.
+```bash
+sudo python3 multiscanwifi.py -i wlan0,wlan1 -s 5 -w 10 -o ./results/ -d 20
+```
 
+| Argument           | Description                                                  | Default      |
+| ------------------ | ------------------------------------------------------------ | ------------ |
+| `-i, --interfaces` | Comma-separated list of Wi-Fi interfaces (e.g., wlan0,wlan1) | **Required** |
+| `-s, --scantime`   | Scan time per channel (seconds)                              | 5            |
+| `-w, --waittime`   | Wait time between scans (seconds)                            | 10           |
+| `-o, --out`        | Output folder to save results                                | `./out/`     |
+| `-d, --deauth`     | Number of deauthentication packets per client                | 20           |
 
-### Automode
-The third mode is automode, which will automatically scan for networks and deauthenticate clients on the networks while listening for handshakes. It will save one cap file per handshake, you can specify the output directory using -O, or it will automatically save to the current working directory.
+Example
 
+Scan two interfaces with default settings:
+`sudo python3 multiscanwifi.py -i wlan0,wlan1`
+Scan a single interface with custom scan and wait times:
+`sudo python3 multiscanwifi.py -i wlan0 -s 10 -w 5 -o ./captures/`
+Limit deauthentication packets to 5:
+`sudo python3 multiscanwifi.py -i wlan0 -d 5`
 
-### Filters
-All three modes can be filtered to specific channels (-c), BSSID (-b) or ESSIDS (-e). You can either input one BSSID/ESSID or input a file containing on BSSID/ESSID per line. 
-
-
-## Examples
-  
-Scanmode filter for SSID "MyWifiNetwork" using wlan0 interface:
-
-> python driveshake.py -S -e MyWifiNetwork wlan0
-
-Capturemode on network with BSSID AA:BB:CC:DD:EE:FF, output capture file to $PWD/Handshake.cap
-
-> python driveshake.py -C -b AA:BB:CC:DD:EE:FF  -o Handshake.cap wlan0
-
-Automode all networks on channel 8, will save to current working directory:
-
-> python driveshake.py -A -c 8  wlan0
-
-
-
+## Notes
+- Deauthentication attacks may be illegal on networks you do not own.
