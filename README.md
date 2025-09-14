@@ -1,7 +1,5 @@
 # MultiScanWiFi
 
-# MultiScanWiFi
-
 MultiScanWiFi is a **multithreaded Wi-Fi scanner** that supports multiple interfaces simultaneously.  
 It automatically scans access points (APs) and clients, captures WPA/WPA2 handshakes, performs deauthentication attacks (deauth), and provides a terminal-based interface with logging.
 
