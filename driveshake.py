@@ -90,7 +90,7 @@ class Client:
 def determineEncryption(p):
     if p.subtype != 8:  # not Beacon
         return None
-    
+
     enc = []
     if p.haslayer(Dot11Elt): # type: ignore
         elt = p[Dot11Elt] # type: ignore
@@ -126,7 +126,7 @@ def determineEncryption(p):
             enc.append("WEP")
         else:
             enc.append("OPN")
-    
+
     return enc
 
 # -------------------
@@ -227,7 +227,7 @@ def scanAPClients(interface, bssid_filter, essid_filter, ignore_bssid, channel, 
                                 ap.channel = int(p[Dot11Elt:3].info[0]) # type: ignore
                             except:
                                 pass
-                        
+
                         ap.frames = ap.frames + 1
                         break
             if scr:
@@ -341,6 +341,10 @@ def interfaceMonitorMode(interface):
 
 def setInterfaceChannel(interface, channel):
     global ip_iw, ifconfig_iwconfig, devnull
+    # -------- time fix
+    if(channel > 14):
+        return
+    # -----------------
     try:
         if ifconfig_iwconfig:
             s = subprocess.Popen(f"iwconfig {interface} channel {channel}", shell=True, stdout=devnull, stderr=subprocess.PIPE)
@@ -462,7 +466,7 @@ def scanModeAuto(interface, bssid_filter, essid_filter, ignore_bssid, channel, s
                         continue
                     if ap.frames < 5:
                         continue
-                    # 
+                    #
                     if ap.enc:
                         if any(x in ap.enc for x in ["WPA3-SAE", "WPA3-OWE", "WPA2-Enterprise"]):
                             logger.warning(f"[SCANNER] [SCAN] {interface} Ignoring AP {ap.ssid} ({ap.bssid}) with enc {ap.enc}")
