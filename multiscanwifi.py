@@ -47,9 +47,9 @@ class ScanManager(threading.Thread):
 
 
     def run(self):
-        self.scan_count += 1
         while not self.stop_flag:
             try:
+                self.scan_count += 1
                 channel = get_channel(self.interface, self.scan_count)
                 logger.info(f"[MAIN] [THREAD] Scanning {self.interface} on channel {channel}")
 
